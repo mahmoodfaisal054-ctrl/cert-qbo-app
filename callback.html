@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Connection result</title><link rel="stylesheet" href="style.css"></head><body><main>
+<header><div class="co">CERT. GLOBAL MANAGEMENT F.Z.E</div><h1>Connection result</h1></header>
+<div id="out" class="box">Reading the response...</div>
+<p class="muted">This page does not store or send anything. The code below works once, expires within minutes, and is useless without the app's secret key, which is never on this site.</p>
+<script>
+(function () {
+  const p = new URLSearchParams(location.search), out = document.getElementById("out");
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  if (p.get("error")) { out.innerHTML = "<b>Connection not completed:</b> " + esc(p.get("error")); return; }
+  const expected = sessionStorage.getItem("oauth_state");
+  sessionStorage.removeItem("oauth_state");
+  if (!p.get("code") || !expected || p.get("state") !== expected) {
+    out.innerHTML = "<b>Security check failed.</b> Please start again from the Connect page."; return; }
+  out.innerHTML = "<p><b>Approved.</b> Copy the line below into the CERT Bookkeeping Connector app now:</p>" +
+    "<p><code id='c'>" + esc(p.get("code")) + " " + esc(p.get("realmId") || "") + "</code></p>" +
+    "<button class='btn' id='cp'>Copy</button>";
+  document.getElementById("cp").onclick = () => navigator.clipboard.writeText(document.getElementById("c").textContent);
+  history.replaceState(null, "", location.pathname);   // remove the code from the address bar
+})();
+</script>
+<nav><a href="index.html">Home</a><a href="privacy.html">Privacy policy</a><a href="terms.html">Terms of use</a></nav></main></body></html>

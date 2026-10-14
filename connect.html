@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Connect to QuickBooks</title><link rel="stylesheet" href="style.css"></head><body><main>
+<header><div class="co">CERT. GLOBAL MANAGEMENT F.Z.E</div><h1>Connect to QuickBooks</h1></header>
+<p>You will be taken to Intuit to sign in and approve access for CERT. GLOBAL MANAGEMENT F.Z.E's own QuickBooks Online company. Only an authorised company administrator should continue.</p>
+<p><button class="btn" id="go">Continue to Intuit</button></p>
+<p class="muted" id="msg"></p>
+<script>
+// Public OAuth 2.0 settings. The Client ID is public; the Client SECRET is never placed on this site.
+const CLIENT_ID = "PASTE_CLIENT_ID_HERE";
+const REDIRECT_URI = new URL("callback.html", location.href).href;
+const SCOPE = "com.intuit.quickbooks.accounting";
+document.getElementById("go").onclick = function () {
+  if (CLIENT_ID.startsWith("PASTE")) { document.getElementById("msg").textContent = "Setup not complete: Client ID not configured."; return; }
+  const a = new Uint8Array(16); crypto.getRandomValues(a);
+  const state = Array.from(a, b => b.toString(16).padStart(2, "0")).join("");
+  sessionStorage.setItem("oauth_state", state);   // checked on callback (CSRF protection)
+  const q = new URLSearchParams({client_id: CLIENT_ID, response_type: "code", scope: SCOPE,
+                                 redirect_uri: REDIRECT_URI, state: state});
+  location.href = "https://appcenter.intuit.com/connect/oauth2?" + q.toString();
+};
+</script>
+<nav><a href="index.html">Home</a><a href="privacy.html">Privacy policy</a><a href="terms.html">Terms of use</a></nav></main></body></html>
